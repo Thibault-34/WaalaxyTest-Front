@@ -32,3 +32,12 @@ export interface IActionCreditPayload {
   action_detail: string;
   value: number;
 }
+
+export interface IUser {
+  _id: string;
+  name: string;
+}
+
+export interface IUserPayload {
+  name: string;
+}
