@@ -1,13 +1,19 @@
+import { Suspense } from 'react';
+import { RecoilRoot } from 'recoil';
+
 import ActionQueueForm from './components/ActionQueueForm';
 import ActionCreditViewer from './components/ActionCreditViewer';
 
 function App() {
   return (
-    <div>
-      <ActionCreditViewer />
-
-      <ActionQueueForm />
-    </div>
+    <RecoilRoot>
+      <Suspense fallback={<div>Loading...</div>}>
+        <div>
+          <ActionCreditViewer />
+          <ActionQueueForm />
+        </div>
+      </Suspense>
+    </RecoilRoot>
   );
 }
 
