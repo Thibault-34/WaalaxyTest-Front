@@ -2,54 +2,35 @@ import { FormEvent, useEffect, useState, useMemo, useRef } from 'react';
 
 import Select, { ISelectOption } from './components/Select';
 import TextInput from './components/TextInput';
+import api from './services/api';
 
-import { IActionDetail, IAction } from './types';
+import { IActionDetail, IAction, IActionPayload } from './types';
 
-const ACTION_DETAILS: IActionDetail[] = [
-  {
-    _id: 'actiondetailid1',
-    name: 'Action A',
-    max_value: 30,
-  },
-  {
-    _id: 'actiondetailid2',
-    name: 'Action B',
-    max_value: 30,
-  },
-];
-
-const ACTIONS: IAction[] = [
-  {
-    _id: 'actionid1',
-    user: 'userid1',
-    action_detail: {
-      _id: 'actiondetailid1',
-      name: 'Action A',
-      max_value: 30,
-    },
-  },
-  {
-    _id: 'actionid2',
-    user: 'userid1',
-    action_detail: {
-      _id: 'actiondetailid2',
-      name: 'Action B',
-      max_value: 30,
-    },
-  },
-];
+const USER_ID = '62d691d5599fface86d0b6a6';
 
 function App() {
   const [actionDetails, setActionDetails] = useState<IActionDetail[]>([]);
   const [actions, setActions] = useState<IAction[]>([]);
-  const [quantity, setQuantity] = useState<number>(0);
+  const [quantity, setQuantity] = useState<number>(1);
 
   const selectRef = useRef<HTMLSelectElement>(null);
 
   useEffect(() => {
-    setActions(ACTIONS);
-    setActionDetails(ACTION_DETAILS);
+    setActionDetailsFromApi();
+    setUserActionsFromApi();
   }, []);
+
+  const setActionDetailsFromApi = async () => {
+    const actionsDetails = await api.actionDetails.getAll();
+
+    if (actionsDetails) setActionDetails(actionsDetails);
+  };
+
+  const setUserActionsFromApi = async () => {
+    const actions = await api.actions.getAllByUser(USER_ID);
+
+    if (actions) setActions(actions);
+  };
 
   const actionDetailOptions: ISelectOption[] = useMemo(() => {
     return actionDetails.map(el => ({
@@ -58,25 +39,20 @@ function App() {
     }));
   }, [actionDetails]);
 
-  const addActions = () => {
+  const addActions = async () => {
     const selectedActionDetail: IActionDetail | undefined = actionDetails.find(
       actionDetail => actionDetail._id === selectRef.current?.value,
     );
 
     if (selectedActionDetail) {
-      const registerNewActions = (actionDetails: IActionDetail[]): IAction[] => {
-        return actionDetails.map(actionDetail => ({
-          _id: `${Math.floor(Math.random() * 1000000 + 1)}`,
-          user: 'userid',
-          action_detail: actionDetail,
-        }));
+      const action: IActionPayload = {
+        user: USER_ID,
+        action_detail: selectedActionDetail._id,
       };
 
-      const newActions: IAction[] = registerNewActions(
-        Array.from({ length: quantity }, () => selectedActionDetail),
-      );
+      const newActions: IAction[] | null = await api.actions.post(action, quantity);
 
-      setActions([...actions, ...newActions]);
+      if (newActions) setActions(currentActions => [...currentActions, ...newActions]);
     }
   };
 
