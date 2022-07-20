@@ -1,4 +1,5 @@
 import { ChangeEvent, forwardRef, ForwardRefRenderFunction } from 'react';
+import styled from 'styled-components';
 
 export interface ISelectOption {
   value: string;
@@ -10,6 +11,14 @@ export interface ISelectProps {
   onSelect?: (value: string) => void;
 }
 
+const StyledSelect = styled.select`
+  background-color: #ffffff;
+  color: #212121;
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: none;
+`;
+
 const Select: ForwardRefRenderFunction<HTMLSelectElement, ISelectProps> = (
   { options, onSelect }: ISelectProps,
   ref,
@@ -19,13 +28,13 @@ const Select: ForwardRefRenderFunction<HTMLSelectElement, ISelectProps> = (
   };
 
   return (
-    <select ref={ref} onChange={_onSelect}>
+    <StyledSelect ref={ref} onChange={_onSelect}>
       {options.map(option => (
         <option key={option.value} value={option.value}>
           {option.children}
         </option>
       ))}
-    </select>
+    </StyledSelect>
   );
 };
 
