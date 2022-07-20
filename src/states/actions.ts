@@ -1,15 +1,17 @@
-import { atom, selector, DefaultValue } from 'recoil';
+import { atom, selector } from 'recoil';
 
 import api from '../services/api';
+import { IAction } from '../types';
+import { currentUserState } from './users';
 
-const USER_ID = '62d691d5599fface86d0b6a6';
-
-export const userActionsState = atom({
+export const userActionsState = atom<IAction[]>({
   key: 'userActionsState',
   default: selector({
     key: 'userActionsStateDefault',
-    get: async () => {
-      return (await api.actions.getAllByUser(USER_ID)) ?? [];
+    get: async ({ get }) => {
+      const userId = get(currentUserState)?._id;
+      if (userId) return (await api.actions.getAllByUser(userId)) ?? [];
+      return [];
     },
   }),
 });

@@ -1,7 +1,7 @@
 import { FormEvent, useState, useMemo, useRef } from 'react';
 import { useRecoilValue, useRecoilState } from 'recoil';
 
-import { actionDetailsState, userActionsState } from '../states';
+import { actionDetailsState, userActionsState, currentUserState } from '../states';
 
 import Select, { ISelectOption } from './Select';
 import TextInput from './TextInput';
@@ -9,11 +9,10 @@ import api from '../services/api';
 
 import { IAction, IActionPayload } from '../types';
 
-const USER_ID = '62d691d5599fface86d0b6a6';
-
 function ActionQueueForm() {
   const actionDetails = useRecoilValue(actionDetailsState);
   const [userActions, setUserActions] = useRecoilState(userActionsState);
+  const currentUser = useRecoilValue(currentUserState);
   const [quantity, setQuantity] = useState<number>(1);
 
   const selectRef = useRef<HTMLSelectElement>(null);
@@ -26,9 +25,9 @@ function ActionQueueForm() {
   }, [actionDetails]);
 
   const addUserActions = async () => {
-    if (selectRef.current?.value) {
+    if (selectRef.current?.value && currentUser?._id) {
       const action: IActionPayload = {
-        user: USER_ID,
+        user: currentUser?._id,
         action_detail: selectRef.current?.value,
       };
 
