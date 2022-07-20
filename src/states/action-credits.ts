@@ -13,9 +13,4 @@ export const userActionCreditsState = atom({
       return [];
     },
   }),
-  effects: [
-    ({ resetSelf }) => {
-      return resetSelf();
-    },
-  ],
 });
