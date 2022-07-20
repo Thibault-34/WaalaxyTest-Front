@@ -17,7 +17,6 @@ const Sign = () => {
 
     if (!user) {
       user = await api.users.post({ name });
-      console.log(user);
     }
 
     if (user) setCurrentUser(user);
