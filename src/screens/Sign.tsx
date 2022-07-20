@@ -1,10 +1,25 @@
 import React, { useState } from 'react';
 import { useRecoilState } from 'recoil';
 import { Navigate } from 'react-router-dom';
+import styled from 'styled-components';
 
-import TextInput from '../components/TextInput';
+import Input from '../components/Input';
+import Button from '../components/Button';
 import { currentUserState } from '../states';
 import api from '../services/api';
+
+const Form = styled.form`
+  display: flex;
+  justify-content: space-between; ;
+`;
+
+const StyledTextInput = styled(Input).attrs(props => ({
+  ...props,
+  type: 'text',
+}))`
+  flex: 1;
+  margin-right: 24px;
+`;
 
 const Sign = () => {
   const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
@@ -26,11 +41,18 @@ const Sign = () => {
 
   return (
     <div>
-      <form onSubmit={handleSubmit}>
-        <TextInput value={name} onChange={setName} />
+      <h2>Connexion</h2>
 
-        <input value="Entrer" type="submit" />
-      </form>
+      <Form onSubmit={handleSubmit}>
+        <StyledTextInput
+          type="text"
+          value={name}
+          onChange={e => setName(e.target.value)}
+          placeholder="Nom d'utilisateur existant ou nouveau"
+        />
+
+        <Button value="Entrer" />
+      </Form>
     </div>
   );
 };

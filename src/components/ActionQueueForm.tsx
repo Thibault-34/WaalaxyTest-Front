@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { actionDetailsState, userActionsState, currentUserState } from '../states';
 
 import Select, { ISelectOption } from './Select';
-import TextInput from './TextInput';
+import Input from './Input';
 import Button from './Button';
 import api from '../services/api';
 
@@ -78,7 +78,7 @@ function ActionQueueForm(props: DetailedHTMLProps<HTMLAttributes<HTMLDivElement>
       <Form onSubmit={handleSubmit}>
         <Select options={actionDetailOptions} ref={selectRef} />
 
-        <TextInput value={quantity} onChange={setQuantity} />
+        <Input type="number" value={quantity} onChange={e => setQuantity(Number(e.target.value))} />
 
         <Button value="Ajouter" />
       </Form>
